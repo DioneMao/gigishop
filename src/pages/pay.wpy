@@ -1,0 +1,421 @@
+<style lang="less">
+  
+  .clearFix:after {
+      display:block;
+      content:'';
+      clear:both;
+      height:0;
+  }
+  .left{
+      float:left;
+      display:inline-block;
+  }
+  .right{
+      float:right;
+      display:inline-block;
+  }
+  .container{
+      width:100%;
+      height:auto;
+      display:block;
+  }
+  
+  .buyied{
+      width:92%;
+      display:block;
+      height:auto;
+      margin:10rpx 4%;
+      box-shadow:0 8px 6px -6px #8a8a8a;
+      background-color:#f8f8f8;
+  }
+   
+  .buyied-list{
+      height:170rpx;
+      padding:30rpx 20rpx;
+      display:block;
+      background-color:#fff;
+      border-bottom:1rpx solid #f8f8f8;
+      .buyied-left{
+          display:flex;
+          flex-direction:row;
+          align-items:center;
+      }
+      .buyied-logo{
+          height:170rpx;
+          width:170rpx;
+          display:inline-block;
+          padding-right:30rpx;
+          .logo{
+              height:170rpx;
+              width:170rpx;
+              display:inline-block;
+          }
+      }
+      .buyied-info{
+          .name{
+              color:#1d1d1d;
+              font-size:32rpx;
+              height:32rpx;
+              line-height:32rpx;
+              padding:30rpx 0rpx;
+          }
+          .num{
+              color:#919191;
+              font-size:28rpx;
+              height:28rpx;
+              line-height:28rpx;
+          }
+      }
+      .right{
+          color:#1d1d1d;
+          font-size:32rpx;
+          line-height:170rpx;
+      }
+  }
+  
+  .bk{
+      width:100%;
+      height:180rpx;
+      background-color:#fc9631;
+  }
+
+  .address-info{
+      width:100%;
+      height:auto;
+      display:block;
+      margin-top:-180rpx;
+  }
+
+  .personal-info{
+      width:92%;
+      height:auto;
+      margin:20rpx 4%;
+      position:relative;
+ 
+      .infoDetail{
+          padding:30rpx 20rpx;
+          background-color:#fff;
+          display:block;
+          box-shadow:0 8px 6px -6px #8a8a8a;
+          text-align:center;
+
+          .infoDetail_address{
+              padding-bottom:20rpx;
+              border-bottom:1rpx solid #efefef;
+          }
+          .arrivetime{
+              padding-top:20rpx;
+              font-size:32rpx;
+              line-height:32rpx;
+              display:block;
+              color:#1d1d1d;
+          }
+          .infolist{
+              font-size:38rpx;
+              line-height:60rpx;
+              display:block;
+              color:#1d1d1d;
+          }
+          .infolistwo{
+              height:60rpx;
+              line-height:60rpx;
+              display:block;
+              .personal{
+                  font-size:34rpx;
+                  color:#1d1d1d;
+              }
+              .phone{
+                  font-size:28rpx;
+                  color:#727272;
+                  padding-left:30rpx;
+              }
+          }
+      }
+  }
+
+  .orange{
+      color:#fc9631;
+      font-weight:bold;
+  }
+
+  .pay{
+      display:block;
+      margin-top:50rpx;
+      width:92%;
+      padding:0rpx 4%;
+      height:90rpx;
+  }
+
+  .btn{
+      color:#fff;
+      font-weight:bold;
+      width:100%;
+      height:90rpx;
+      line-height:90rpx;
+      font-size:32rpx;
+      border-radius:45rpx;
+      background-color:#fc9631;
+  }
+
+  .paymodal{
+      width:351rpx;
+      height:35qrpx;
+      margin:20rpx auto;
+      display:block;
+      .payimg{
+          width:351rpx;
+          height:351rpx;
+      }
+  }
+   
+</style>
+
+<template>
+    <view class="container">
+        
+        <view class="bk"></view>
+        <view class="address-info">
+            <view class="personal-info">
+                <view class="infoDetail">
+                    <view class="infoDetail_address">
+                        <view class="infolist">{{address}}</view>
+                        <view class="infolistwo"><text class="personal">{{personal}}</text><text class="phone">{{phone}}</text></view>
+                    </view>
+                    
+                    <!--<view class="infolist">门牌号: <text class="orange">{{addrDetail}}</text></view>-->
+                    <view class="arrivetime">立即送出 <text class="orange">(大约{{time}}送达)</text></view>
+                </view>
+            </view>
+        </view>
+
+        <view class="buyied">
+            <repeat for="{{paylist}}" index="index" item="item">
+            <view class="buyied-list clearFix">
+                <view class="left buyied-left">
+                    <view class="buyied-logo">
+                        <image src="{{src}}" class="logo"></image>
+                    </view>
+                    <view class="buyied-info">
+                        <view class="name">{{item.name}}</view> 
+                        <view class="num">X {{item.num}}</view>
+                    </view>
+                </view>
+                <view class="right">
+                    ￥{{item.price}}
+                </view>
+            </view>
+            </repeat>
+        </view>
+
+
+        <view class="pay">
+            <button class="btn" catchtap="dopay">一键支付</button>
+        </view> 
+         
+        <modal hidden="{{hiddenpay}}" title="长按二维码付款" bindcancel="cancelpay" bindconfirm="confirmpay">
+            <view class="paymodal">
+                <image src="https://images.yitushijie.com/5241656535524597009" class="payimg" bindtap="analyse"></image>
+            </view>
+        </modal>
+    </view>
+
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Pay extends wepy.page {
+    
+    config = {
+        navigationBarTitleText: '提交订单'
+    }
+    components = {
+      
+    }
+
+    mixins = [testMixin]
+
+    data = {
+        openid: '',
+        personal: '',
+        phone:'',
+        address:'',
+        addrDetail:'',
+        paylist:[],
+        hiddenpay:true,
+        src: "https://images.yitushijie.com/17636750429190641773"
+    }
+
+    onShareAppMessage(res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+          console.log(res.target)
+        }
+        return {
+            title: '英俊餐饮店',
+            path:'/pages/pay',
+            success: function(res) {
+              // 转发成功
+            },
+            fail: function(res) {
+              // 转发失败
+            }
+        }
+    }
+
+    computed = {
+        now () {
+            return +new Date()
+        },
+        time () {
+            var date = new Date()
+            var hour = date.getHours()
+            var min = date.getMinutes()
+            var arrivemin = min + 40
+            if (arrivemin > 60){
+                var time = (hour+1) + ':' + (arrivemin-60)
+                return time
+            }
+            if (arrivemin == 60){
+                var time = (hour+1) + ':' + '00'
+                return time
+            }
+            if (arrivemin < 60){
+                var time = hour + ':' + arrivemin
+                return time
+            }
+        }
+    }
+
+    methods = {
+        dopay () {
+            var time = Date.parse(new Date())
+            time = time / 1000;
+            var timestamp = time.toString();
+            //this.hiddenpay = false;
+            var columndata = [];
+            for (var i = 0; i<this.paylist.length; i++){
+                 columndata.push({
+                      "name":this.paylist[i].name,
+                      "count":this.paylist[i].num,
+                      "fee":this.paylist[i].price
+                 })
+            }
+            var data = {
+                "human_name":this.personal,
+                "phone":this.phone,
+                "address": this.address,
+                "column": columndata 
+            }
+            wepy.request({
+                url:'http://127.0.0.1:8080/v1/shop/order',
+                method:'POST',
+                data:data,
+                success:function(res){
+                    if (res.data.code == "0"){
+                        wepy.showToast({
+                            title:'支付成功',
+                            icon:'success'
+                        }) 
+                    }
+                }
+            })
+            /*var data = {
+                "openid" : this.openid,
+                "appid": 'wxc706dca25a7b85b6',
+                "body": "会员",
+                "cashnum": "0.01",
+                "attach":
+                "mercid":"1468320802"
+            }
+            wepy.request({
+                url:'https://doctor.lotusdata.com/interfaces/weixinpay/pay.action'
+            })
+            wx.requestPayment({
+                'timeStamp': timeStamp,
+                'nonceStr': '',
+                'package': '',
+                'signType': 'MD5',
+                'paySign': '',
+            })*/
+        },
+        cancelpay(){
+            this.hiddenpay = true;
+        },
+        confirmpay(){
+
+        },
+        analyse () {
+            wepy.previewImage({
+                current:'https://images.yitushijie.com/5241656535524597009',
+                urls:['https://images.yitushijie.com/5241656535524597009']
+            })
+        },
+        toast () {
+            let promise = this.$invoke('toast', 'show', {
+                title: '自定义标题',
+                img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+            })
+
+            promise.then((d) => {
+                console.log('toast done')
+            })
+        },
+        counterEmit (...args) {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    events = {
+        'index-emit': (...args) => {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    onShow() {
+        let self = this  
+        /*wepy.getStorage({
+            key: 'openid',
+            success(res) {
+                var openid = res.data
+                self.openid = openid 
+            }
+        })*/ 
+        wepy.getStorage({
+            key: 'address',
+            success(res) {
+                var data = res.data
+                var allinfo = JSON.parse(data)
+                self.personal = allinfo.personal
+                self.phone = allinfo.phone
+                self.address = allinfo.address
+                self.addrDetail = allinfo.addrDetail
+            },
+            fail(res) {
+                wepy.showToast({
+                    title:'快去个人中心填地址',
+                    icon:'none'
+                })
+            },
+        })  
+        wepy.getStorage({
+            key: 'buyied',
+            success(res) {
+                var buydata = res.data
+                var buyinfo = JSON.parse(buydata)
+                for (var i=0;i<buyinfo.length;i++){
+                    self.paylist.push({
+                        name: buyinfo[i].name,
+                        price: parseInt(buyinfo[i].price)*buyinfo[i].num,
+                        num:buyinfo[i].num,
+                    })
+                }
+            }
+        }) 
+    }
+  }
+</script>

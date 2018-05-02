@@ -1,0 +1,362 @@
+<style lang="less">
+
+  .container{
+      width:100%;
+      height:auto;
+      display:block;
+  }
+
+  page{
+      background-color:#f4f4f4;
+  }
+
+  .swiper{
+      width:92%;
+      margin:20rpx 4%;
+      height:auto;
+      display:block;
+      background-color:#fff;
+      border-radius:15rpx;
+      box-shadow:0 8px 6px -6px #8a8a8a;
+      .uploadtext{
+          display:block;
+          font-size:32rpx;
+          color:#333;
+          height:32rpx;
+          line-height:32rpx;
+          padding:30rpx 20rpx;
+          border-bottom:1rpx solid #f4f4f4;
+      }
+      .allswiper{
+          width:100%;
+          display:flex;
+          padding:20rpx 0rpx;
+          flex-wrap:wrap;
+      }
+      .swiperlist{
+          width:32%;
+          padding-right:2%;
+          margin:10rpx 0rpx;
+          display:block;
+          height:auto;
+      }
+      .swiperlist:nth-child(3n){
+          padding-right:0;
+      }
+      .img{
+          display:block;
+          width:220rpx;
+          height:220rpx;
+      }
+      /*.swiperlist{
+          margin:20rpx 0;
+          height:200rpx;
+          display:block;
+          width:100%;
+          box-shadow:0 8px 6px -6px #8a8a8a;
+          .img{
+              width:100%;
+              height:100%;
+          }
+      }*/
+  }
+  
+  .uploadimg{
+      width:92%;
+      margin:20rpx 4%;
+      padding:20rpx 0rpx;
+      display:block;
+      border-radius:15rpx;
+      background-color:#fff;
+      box-shadow:0 8px 6px -6px #8a8a8a;
+      .uploadtext{
+          display:block;
+          font-size:32rpx;
+          color:#333;
+          height:32rpx;
+          line-height:32rpx;
+          padding:30rpx 20rpx;
+          border-bottom:1rpx solid #f4f4f4;
+      }
+      .uploadicon{
+          width:100%;
+          display:block;
+          padding:20rpx;
+          height:100rpx;
+          border-bottom:1rpx solid #f4f4f4;
+          .img {
+              width:100rpx;
+              height:100rpx;
+          }
+
+      }
+      .allupload{
+          width:100%;
+          display:flex;
+          padding:20rpx 0rpx;
+          flex-wrap:wrap;
+      }
+      .uploadlist{
+          width:32%;
+          padding-right:2%;
+          margin:10rpx 0rpx;
+          display:block;
+          height:auto;
+          &:nth-child(3n){
+              padding-right:0;
+          }
+          .img{
+              display:block;
+              width:220rpx;
+              height:220rpx;
+          }
+      }
+  }
+
+  .save{
+      display:block;
+      width:92%;
+      padding:20rpx 4%;
+      height:90rpx;
+  }
+
+  .btn{
+      color:#fff;
+      font-weight:bold;
+      width:100%;
+      height:90rpx;
+      line-height:90rpx;
+      font-size:32rpx;
+      border-radius:45rpx;
+      background-color:#fc9631;
+  }
+
+</style>
+
+<template>
+    <view class="container">
+      
+        <view class="uploadimg">
+            <view class="uploadtext">上传轮播图</view>
+            <view class="uploadicon">
+                <image src="https://images.yitushijie.com/add2.png" class="img"  catchtap="chooseimg"></image>
+            </view>
+            <view class="uploadtext">已上传的轮播图</view>
+            <view class="allupload">
+                <repeat for="{{uploads}}" index="index" item="item">
+                <view class="uploadlist">
+                    <image src="{{item.src}}" mode="aspectFill" class="img"></image>
+                </view>
+                </repeat>
+            </view>
+        </view>
+
+
+        <view class="swiper">
+            <view class="uploadtext">已经存在的轮播图</view>
+            <view class="allswiper">
+                <repeat for="{{swiperpic}}" index="index" item="item">
+                    <view class="swiperlist">
+                        <image src="{{item.src}}" mode="aspectFill" class="img" catchtap="delete({{item.src}})"></image>
+                    </view>
+                </repeat>
+            </view>
+        </view>
+
+        <view class="save">
+            <button  class="btn" catchtap="nagita">点击进入编辑详情页</button>
+        </view>
+
+    </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class ManagerSwiper extends wepy.page {
+    
+    config = {
+        navigationBarTitleText: '餐厅首页'
+    }
+    components = {
+      
+    }
+
+    mixins = [testMixin]
+
+    data = {
+        swiperpic:[
+            {
+               src: "http://127.0.0.1:8080/v1/shop/view?id=4.png"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+        ],
+        uploads: [
+            {
+               src: "http://127.0.0.1:8080/v1/shop/view?id=4.png"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+        ]
+    }
+
+    computed = {
+        now () {
+          return +new Date()
+        }
+    }
+
+    onShareAppMessage(res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+          console.log(res.target)
+        }
+        return {
+            title: '英俊餐饮店',
+            path:'/pages/managerswiper',
+            success: function(res) {
+              // 转发成功
+            },
+            fail: function(res) {
+              // 转发失败
+            }
+        }
+    }
+
+    methods = {
+        chooseimg() {
+            let self = this
+            //self.uploads = []
+            wepy.chooseImage({
+                count: 3, 
+                sizeType: ['original', 'compressed'], 
+                sourceType: ['album', 'camera'],
+                success: function (res) {
+                    console.log(res)
+                    var tempFilePaths = res.tempFilePaths
+                    for (var i=0; i<tempFilePaths.length;i++){
+                        var path = tempFilePaths[i]
+
+                        self.uploads.push({
+                            src:path
+                        })
+                        /*wepy.uploadFile({
+                            url: 'https://127.0.0.1:8080/v1/shop/', 
+                            filePath:path,
+                            name: 'Filedata',
+                            formData: {
+                               'itype':3
+                            },
+                            success: function(res){
+                                console.log(res)
+                                if (res.data.code == 0){
+                                    self.uploads.push({
+                                        src:'http://127.0.0.1:8080'+res.data.data
+                                    })
+                                }
+                            },
+                            fail:function(res){
+                                console.log(res)
+                            }
+                        })*/
+                    }
+
+                    self.setData({
+                        uploads: self.uploads
+                    })
+
+                }
+            })
+        },
+        delete (src) {
+            let self = this
+            wepy.showActionSheet({
+                  itemList: ['删除'],
+                  success: function(res) {
+                      if (res.tapIndex == 0){
+
+                          for (var i=0;i<self.swiperpic.length;i++){
+                              if (self.swiperpic[i].src == src){
+                                  self.swiperpic.splice(i,1)
+                              }
+                          }
+                          self.setData({
+                              swiperpic: self.swiperpic
+                          })
+
+                          /*var srca = src.split('?')
+                          var srcb = srca[1].split('=')
+                          var srcc = srcb[1]
+                          wepy.request({
+                              url: 'http://127.0.0.1:8080/v1/shop?itype=3&image_name='+srcc,
+                              mathod: 'DELETE',
+                              header:{'Content-Type':'application/x-www-form-urlencoded'},
+                              success: function(res){
+                                  if (res.data.code == 0){
+                                      self.swiperpic = []
+                                      var data = res.data.data
+                                      for (var i=0;i<data.length;i++){
+                                          self.swiperpic.push({
+                                              src:'http://127.0.0.1:8080/v1/shop/view?id='+data[i]
+                                          })
+                                      }
+                                      self.setData({
+                                          swiperpic: self.swiperpic
+                                      })
+                                  }
+                              }
+                          })*/
+                      }
+                  },
+                  fail: function(res) {
+                    console.log(res.errMsg)
+                  }
+            })
+        },
+        nagita () {
+            wepy.navigateTo({
+                url: 'managermenu'
+            })
+        },
+        
+    }
+
+    events = {
+        
+    }
+ 
+    onLoad() {
+        let self = this
+        /*wepy.request({
+            url:'http://127.0.0.1:8080/v1/shop/?itype=3',
+            method:'GET',
+            header:{'Content-Type':'application/x-www-form-urlencoded'},
+            success:function(res){
+                if (res.data.code == "0") {
+                    var swiperdata = res.data.data
+                    self.swiperpic = []
+                    for (var i=0;i<swiperdata.length;i++){
+                        self.swiperpic.push({
+                            src: 'http://127.0.0.1:8080/v1/shop/view?id='+ swiperdata[i]
+                        })
+                    }
+                    self.setData({
+                        swiperpic: self.swiperpic
+                    })
+                }
+            }
+        })*/
+    }
+  }
+</script>

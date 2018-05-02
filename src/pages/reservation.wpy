@@ -1,0 +1,604 @@
+<style lang="less">
+  
+  .clearFix:after {
+      display:block;
+      content:'';
+      clear:both;
+      height:0;
+  }
+  .left{
+      float:left;
+  }
+  .right{
+      float:right;
+  }
+  .container{
+      width:100%;
+      height:auto;
+      display:block;
+  }
+  
+  .menu{
+      width:100%;
+      display:flex;
+      flex-direction:row;
+      white-space: nowrap;
+      align-items:flex-start;
+  }
+
+  .type{
+      width:30%;
+      height:100%;
+      display:inline-block;
+      background-color:#f8f8f8;
+  }
+
+  .menulist{
+      width:70%;
+      height:100%;
+      overflow-y:scroll;
+      display:inline-block;
+      background-color:#fff;
+  }
+  
+  #active{
+      background-color:#fff;
+      color:#fc9631;
+      border-left:10rpx solid #fc9631;
+      border-bottom:none;
+      box-sizing:border-box; 
+  }
+
+  .type-list{
+      height:95rpx;
+      line-height:95rpx;
+      font-size:32rpx;
+      color:#333;
+      text-align:center;
+      box-sizing:border-box; 
+      border-left:10rpx solid #f8f8f8;
+      border-bottom:1rpx solid #dedede;
+  }
+  
+  .menu-wrap{
+      height:100rpx;
+      display:block;
+      border-bottom:1rpx solid #dedede;
+      padding:25rpx 0rpx;
+
+  }
+  .menu-list{
+      height:100rpx;
+      width:300rpx;
+      margin-left:125rpx;
+      
+      .list-top{
+          height:34rpx;
+          line-height:34rpx;
+          font-size:34rpx;
+          color:#333;
+      }
+      .list-bottom{
+          margin-top:24rpx;
+          height:40rpx;
+          line-height:40rpx;
+          color:#fc9631;
+          font-size:28rpx;
+      }
+      .img{
+          width:40rpx;
+          height:40rpx;
+      }
+  }
+
+  .fixed{
+      position:fixed;
+      bottom:0;
+      width:92%;
+      height:75rpx;
+      padding:15rpx 4%;
+      display:block;
+      background-color:#353535;
+  }
+
+  .fixed-menulist{
+      position:fixed;
+      width:100%;
+      height:auto;
+      bottom:75rpx;
+      display:block;
+      box-shadow: 0rpx -2rpx 2rpx #e5e5e5;
+  }
+
+  .buy-left{
+      font-size:32rpx;
+      color:#87888d;
+      line-height:75rpx;
+      display:flex;
+      flex-direction:row;
+      .price{
+          font-weight:bold;
+          color:#fc9631;
+      }
+      .img{
+           height:73rpx;
+           width:73rpx;
+           margin-right:20rpx;
+      }
+  }
+  .buy-right{
+      padding-top:5rpx;
+      .btn{
+          width:150rpx;
+          height:65rpx;
+          line-height:65rpx;
+          border:none;
+          font-size:28rpx;
+          color:#fff;
+          background:#fc9631;
+          border-radius:32.5rpx;
+      }
+  }
+
+  .selected-list{
+      height:80rpx;
+      width:92%;
+      font-size:28rpx;
+      padding:30rpx 4%;
+      background-color:#f5f5f5;
+      border-bottom:1rpx soild #8a8a8a;
+      display:flex;
+      flex-direction:row;
+      justify-content:space-between;
+  }
+
+  .selected-name{
+       color:#333;
+       line-height:80rpx;
+  }
+
+  .selected-price{
+      font-weight:bold;
+      color:#333;
+      line-height:80rpx;
+  }
+
+  .selected-num{
+      display:inline-block;
+      padding:15rpx 0rpx;
+      line-height:50rpx;
+  }
+
+  .plus{
+      width:48rpx;
+      height:48rpx;
+      color:#333;
+      display:inline-block;
+      text-align:center;
+      border:1rpx solid #fc9631;
+      border-radius:39rpx;
+      background-color:#fc9631;
+  }
+  .divide{
+      width:48rpx;
+      height:48rpx;
+      display:inline-block;
+      text-align:center;
+      color:#acacac;
+      border-radius:39rpx;
+      border:1rpx solid #dfdfdf;
+  }
+  .number{
+      color:#333;
+      font-weight:bold;
+      padding:0rpx 30rpx;
+  }
+
+  .mask{
+      background: rgba(0,0,0,.6);
+  }
+</style>
+
+<template>
+    <view class="container">
+        <view class="menu" style="height:{{height}}px">
+
+            <view class="type">
+                <repeat for="{{datatype}}" index="index" item="item">
+                <view class="type-list" id="{{item.active == true? 'active' : ''}}" catchtap="switchtype({{index}})">{{item.type}}</view>
+                </repeat>
+            </view>
+
+            <view class="menulist">
+                <repeat for="{{menulist}}" index="index" item="item">
+                <view class="menu-wrap">
+                    <view class="menu-list">
+                        <view class="list-top">
+                            {{item.name}}
+                        </view>
+                        <view class="list-bottom clearFix">
+                            <view class="price left">
+                              ￥ {{item.price}}
+                            </view>
+                            <view class="add right">
+                                <image src="{{add}}" class="img" catchtap="addtobuyied({{item.name}},{{item.price}})"></image>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                </repeat>
+            </view>
+
+
+        </view>
+         
+        <view class="fixed-menulist" wx:if="{{buyiedlist == true}}">
+            <repeat for="{{buyieddata}}" index="index" item="item">
+            <view class="selected-list">
+                 <view class="selected-name">
+                   {{item.name}}
+                 </view>
+                 <view class="selected-price">
+                   ￥{{item.price}}
+                 </view>
+                 <view class="selected-num">
+                   <text class="divide" catchtap="divide({{item.name}})">-</text>
+                   <text class="number">{{item.num}}</text>
+                   <text class="plus" catchtap="plus({{item.name}},{{item.price}})">+</text>
+                 </view>
+            </view>
+            </repeat>
+        </view>
+
+
+        <view class="fixed">
+            <view class="buy-info clearFix" catchtap="openbuyiedlist">
+                <view class="left buy-left">
+                    <view>
+                        <image src="{{shop}}" class="img"></image>
+                    </view>
+                    <view>
+                        {{shoptext}} <text class="price" wx:if="{{buyied == true}}">共计{{totalprice}} 元</text> 
+                    </view>
+                </view>
+                <view class="right buy-right">
+                    <button class="btn" wx:if="{{buyied == true}}" catchtap="gopay">去结算</button>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+  import Datatype from '../util/reservate'
+
+  export default class Reservation extends wepy.page {
+    
+    config = {
+        navigationBarTitleText: '食品类别'
+    }
+    components = {
+      
+    }
+
+    mixins = [testMixin]
+
+    data = {
+        /*datatype:[
+            {
+                type:'热销推荐',
+                active:true
+            },
+            {
+                type:'香浓牛奶'
+            },
+            {
+                type:'现磨咖啡'
+            },
+            {
+                type:'好吃的饭'
+            },
+            {
+                type:'好吃的菜'
+            },
+        ],
+        menulist:[
+            {
+                name:'乡宁咖啡(大杯)',
+                price: '14.00',
+            },
+            {
+                name:'乡宁咖啡(大杯)',
+                price: '14.00',
+            },
+            {
+                name:'乡宁咖啡(大杯)',
+                price: '14.00',
+            },
+            {
+                name:'乡宁咖啡(大杯)',
+                price: '14.00',
+            },
+            {
+                name:'乡宁咖啡(大杯)',
+                price: '14.00',
+            },
+        ],*/
+        datatype:[],
+        menulist:[],
+        buyiedlist: false,
+        buyieddata:[],
+        buyied: false,
+        add:"https://images.yitushijie.com/12037615419349685901",
+        shop: "https://images.yitushijie.com/7398482398333260587",
+        shopactive: "https://images.yitushijie.com/4739413625229497311",
+        shoptext:'购物车是空的',
+        totalprice:0,
+        height:0,
+    }
+
+    computed = {
+        now () {
+          return +new Date()
+        },
+    }
+
+    onShareAppMessage(res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+          console.log(res.target)
+        }
+        return {
+            title: '英俊餐饮店',
+            path:'/pages/reservation',
+            success: function(res) {
+              // 转发成功
+            },
+            fail: function(res) {
+              // 转发失败
+            }
+        }
+    }
+
+    methods = {
+        switchtype( index ){
+            this.datatype = []
+            this.menulist = []
+            var allist = Datatype.datatype;
+            var menu = allist[index].menulist
+            for (var i = 0;i<allist.length;i++){
+                if (i==index){
+                    this.datatype.push({
+                        type:allist[i].type,
+                        active:true,
+                    })
+                } else {
+                    this.datatype.push({
+                        type:allist[i].type,
+                        active:false,
+                    })
+                }
+            }
+            for (var j=0;j<menu.length;j++){
+                this.menulist.push({
+                    name: menu[j].name,
+                    price: menu[j].price,
+                })
+            }
+            /*let self = this
+            wepy.request({
+                url:'http://127.0.0.1:8080/v1/shop/navgation',
+                method:'GET',
+                header:{'Content-Type':'application/x-www-form-urlencoded'},
+                success:function(res){
+                    if (res.data.code == "0") {
+                        var menudata = res.data.data
+                        console.log(menudata)
+                        self.datatype = []
+                        self.menulist = []
+                        for (var i=0;i<menudata.length;i++){
+                            if (i==index){
+                                self.datatype.push({
+                                    type:menudata[i].type,
+                                    active:true,
+                                })
+                            } else {
+                                self.datatype.push({
+                                    type:menudata[i].type,
+                                    active:false,
+                                })
+                            }
+                        }
+                        var menulistdata = menudata[index].meun_list
+                        for (var j=0;j<menulistdata.length;j++){
+                            self.menulist.push({
+                                name: menulistdata[j].name,
+                                price: menulistdata[j].price,
+                            })
+                        }
+                        self.setData({
+                            datatype: self.datatype,
+                            menulist: self.menulist
+                        })
+                    }
+                }
+            })*/
+        },
+        addtobuyied(name,price){
+            this.totalprice = this.totalprice + parseInt(price)
+            this.buyied = true
+            this.shoptext = ''
+            this.shop = this.shopactive
+            var isexist = false
+            for (var i=0;i<this.buyieddata.length;i++){
+                if (this.buyieddata[i].name == name){
+                    isexist = true
+                    this.buyieddata[i].num++
+                    break
+                } 
+            }
+            if ( isexist == false){
+                this.buyieddata.push({
+                   name:name,
+                   price:price,
+                   num:1,
+                })
+            }
+        },
+        openbuyiedlist(){
+            this.buyiedlist = !this.buyiedlist
+        },
+        divide(name) {
+            for (var i=0;i<this.buyieddata.length;i++){
+                if(this.buyieddata[i].name == name){
+                    if (this.buyieddata[i].num == 1){
+                        this.totalprice = this.totalprice - parseInt(this.buyieddata[i].price)
+                        this.buyieddata.splice(i,1)
+                    } else {
+                        this.buyieddata[i].num--
+                        this.totalprice = this.totalprice - parseInt(this.buyieddata[i].price)
+                    }
+                    break
+                }
+            }
+            if (this.buyieddata.length == 0){
+                this.buyied = false
+                this.shoptext = '购物车是空的'
+                this.shop = "https://images.yitushijie.com/12037615419349685901"
+            }
+        },
+        plus(name,price){
+            for (var i=0;i<this.buyieddata.length;i++){
+                if(this.buyieddata[i].name == name){
+                    this.buyieddata[i].num++
+                    this.totalprice = this.totalprice + parseInt(this.buyieddata[i].price)
+                } else {
+                    this.buyieddata.push({
+                        name:name,
+                        price:price,
+                        num:1,
+                    })
+                    this.totalprice = this.totalprice + parseInt(price)
+                }
+            }
+        },
+        gopay() {
+            var _this = this
+            if (this.buyieddata.length == 0){
+                wepy.showToast({
+                    title:'还没买饭哦',
+                    icon:'none'
+                })
+            } else {
+                wepy.setStorage({
+                    key: 'buyied',
+                    data: JSON.stringify(_this.buyieddata)
+                })
+                wepy.navigateTo({
+                    url: 'pay'
+                })
+            }
+        },
+        toast () {
+            let promise = this.$invoke('toast', 'show', {
+                title: '自定义标题',
+                img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+            })
+
+            promise.then((d) => {
+                console.log('toast done')
+            })
+        },
+        counterEmit (...args) {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    events = {
+        'index-emit': (...args) => {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+
+    onLoad(){
+        let self = this
+        wepy.getSystemInfo({
+            success:function (res){
+                console.log(res.screenHeight)
+                console.log(res.windowHeight)
+                self.height = res.windowHeight
+            }
+        })
+    }
+
+    onShow() {
+        let self = this
+        this.datatype = []
+        this.menulist = []
+        var allist = Datatype.datatype;
+        var menu = allist[0].menulist
+        for (var i = 0;i<allist.length;i++){
+            if (i==0){
+                this.datatype.push({
+                    type:allist[i].type,
+                    active:true,
+                })
+            } else {
+                this.datatype.push({
+                    type:allist[i].type,
+                    active:false,
+                })
+            }
+        }
+        for (var j=0;j<menu.length;j++){
+            this.menulist.push({
+                name: menu[j].name,
+                price: menu[j].price,
+            })
+        }
+        /*wepy.request({
+            url:'http://127.0.0.1:8080/v1/shop/navgation',
+            method:'GET',
+            header:{'Content-Type':'application/x-www-form-urlencoded'},
+            success:function(res){
+                if (res.data.code == "0") {
+                    var menudata = res.data.data
+                    console.log(menudata)
+                    self.datatype = []
+                    self.menulist = []
+                    for (var i=0;i<menudata.length;i++){
+                        if (i==0){
+                            self.datatype.push({
+                                type:menudata[i].type,
+                                active:true,
+                            })
+                        } else {
+                            self.datatype.push({
+                                type:menudata[i].type,
+                                active:false,
+                            })
+                        }
+                    }
+                    var menulistdata = menudata[0].meun_list
+                    for (var j=0;j<menulistdata.length;j++){
+                        self.menulist.push({
+                            name: menulistdata[j].name,
+                            price: menulistdata[j].price,
+                        })
+                    }
+                    self.setData({
+                        datatype: self.datatype,
+                        menulist: self.menulist
+                    })
+                }
+            }
+        })*/
+    }
+  }
+</script>

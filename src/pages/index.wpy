@@ -1,0 +1,241 @@
+<style lang="less">
+
+  .container{
+      width:100%;
+      height:auto;
+      display:block;
+  }
+
+  .swiperwrap{
+      width:100%;
+      height:280rpx;
+      display:block;
+  }
+
+  .swiper{
+      width:100%;
+      height:280rpx;
+      display:block;
+  }
+
+  .swiperimg{
+      width:100%;
+      height:280rpx;
+      border-radius: 0rpx 0rpx 100rpx 100rpx ;/*左上角 右上角 左下角 右下角*/
+  }
+
+  .starteat{
+      width:100%;
+      height:65rpx;
+      display:block;
+      padding:57.5rpx 0;
+      .btn{
+          width:290rpx;
+          height:65rpx;
+          color:#fc9631;
+          font-size:32rpx;
+          line-height:65rpx;
+          display:block;
+          margin:0 auto;
+          background-color:#fff;
+          border:1px solid #fc9631;
+          border-radius:32.5rpx;
+      }
+  }
+   
+  .infoshow{
+      width:92%;
+      margin:0 4%;
+      height:370rpx;
+      display:block;
+      .img{
+          width:100%;
+          height:370rpx;
+      }
+  }
+
+  .advise{
+      width:92%;
+      height:172rpx;
+      margin:45rpx 4%;
+      display:block;
+      .scroll-view{
+          width:100%;
+          height:172rpx;
+          display:flex;
+          white-space: nowrap;
+      }
+      .scroll{
+          width:300rpx;
+          height:172rpx;
+          padding-right:20rpx;
+          display:inline-block;
+          .img{
+              width:300rpx;
+              height:172rpx;
+              display:inline-block;
+          }
+      }
+  }
+
+</style>
+
+<template>
+    <view class="container">
+
+        <view class="swiperwrap">
+            <swiper indicator-dots="{{indicatorDots}}" indicator-active-color="{{indicatorColor}}"
+            autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" class="swiper">
+                <repeat for="{{swiperpic}}" index="index" item="item">
+                    <swiper-item>
+                        <image src="{{item.src}}" class="swiperimg" ></image>
+                    </swiper-item>
+                </repeat>
+            </swiper>
+        </view>
+
+        <view class="starteat"> 
+            <button class="btn" catchtap="start">开始订餐</button>  
+        </view>
+
+        <view class="infoshow">
+            <image src="{{infoshow}}" class="img" ></image>
+        </view>
+
+        <view class="advise">
+            <scroll-view class="scroll-view" scroll-x>
+                 <repeat for="{{advisepic}}" index="index" item="item">
+                 <view class="scroll">
+                     <image src="{{item.src}}" class="swiperimg" ></image>
+                 </view>
+                 </repeat>
+            </scroll-view>
+        </view>
+
+    </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Index extends wepy.page {
+    
+    config = {
+        navigationBarTitleText: '餐厅首页'
+    }
+    components = {
+      
+    }
+
+    mixins = [testMixin]
+
+    data = {
+        indicatorDots:true,
+        indicatorColor:'#fc9631',
+        autoplay:true,
+        interval:5000,
+        duration:1000,
+        swiperpic:[
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+            {
+               src: "https://images.yitushijie.com/17146967117405837047"
+            },
+        ],
+        infoshow:"https://images.yitushijie.com/16451821363683022817",
+        advisepic:[
+            {
+               src: "https://images.yitushijie.com/17636750429190641773"
+            },
+            {
+               src: "https://images.yitushijie.com/17636750429190641773"
+            },
+            {
+               src: "https://images.yitushijie.com/17636750429190641773"
+            },
+        ],
+
+    }
+
+    computed = {
+        now () {
+          return +new Date()
+        }
+    }
+
+    onShareAppMessage(res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+          console.log(res.target)
+        }
+        return {
+            title: '英俊餐饮店',
+            path:'/pages/index',
+            success: function(res) {
+              // 转发成功
+            },
+            fail: function(res) {
+              // 转发失败
+            }
+        }
+    }
+
+    methods = {
+        start () {
+            wepy.navigateTo({
+                url: 'reservation'
+            })
+        },
+        toast () {
+            let promise = this.$invoke('toast', 'show', {
+                title: '自定义标题',
+                img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+            })
+
+            promise.then((d) => {
+                console.log('toast done')
+            })
+        },
+        counterEmit (...args) {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    events = {
+        'index-emit': (...args) => {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+ 
+    onLoad() {
+        let self = this
+        /*wepy.request({
+            url:'http://127.0.0.1:8080/v1/shop/?itype=3',
+            method:'GET',
+            header:{'Content-Type':'application/x-www-form-urlencoded'},
+            success:function(res){
+                if (res.data.code == "0") {
+                    var swiperdata = res.data.data
+                    self.swiperpic = []
+                    for (var i=0;i<swiperdata.length;i++){
+                        self.swiperpic.push({
+                            src: 'http://127.0.0.1:8080/v1/shop/view?id='+ swiperdata[i]
+                        })
+                    }
+                    self.setData({
+                        swiperpic: self.swiperpic
+                    })
+                }
+            }
+        })*/
+    }
+  }
+</script>

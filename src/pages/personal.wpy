@@ -1,0 +1,307 @@
+<style lang="less">
+  
+  .clearFix:after {
+      display:block;
+      content:'';
+      clear:both;
+      height:0;
+  }
+  .left{
+      float:left;
+  }
+  .right{
+      float:right;
+  }
+  .container{
+      width:100%;
+      height:auto;
+      display:block;
+  }
+  
+  .address{
+      width:100%;
+      height:auto;
+      background-color:#fff;
+  }
+
+  .list{
+    width:92%;
+    padding:20rpx 4%;
+    height:50rpx;
+    line-height:50rpx;
+
+    .input{
+        text-align:right;
+    }
+  }
+
+  .addressleft{
+      float:left;
+      color:#333;
+      font-size:32rpx;
+      display:inline-block;
+  }
+
+  .addressright{
+      float:right;
+      color:#333333;
+      font-size:32rpx;
+      display:inline-block;
+  }
+
+  .border{
+      border-bottom:1px solid #f4f4f4;
+  }
+
+  .save{
+      display:block;
+      margin-top:50rpx;
+      width:92%;
+      padding:0rpx 4%;
+      height:90rpx;
+  }
+
+  .btn{
+      color:#fff;
+      font-weight:bold;
+      width:100%;
+      height:90rpx;
+      line-height:90rpx;
+      font-size:32rpx;
+      border-radius:45rpx;
+      background-color:#fc9631;
+  }
+
+  .fixed{
+      position:fixed;
+      bottom:0;
+      width:92%;
+      height:75rpx;
+      padding:15rpx 4%;
+      display:block;
+      background-color:#353535;
+  }
+
+  .buy-left{
+      font-size:32rpx;
+      color:#87888d;
+      line-height:75rpx;
+      display:flex;
+      flex-direction:row;
+      .img{
+           height:73rpx;
+           width:73rpx;
+           margin-right:20rpx;
+      }
+  }
+  .buy-right{
+      padding-top:5rpx;
+      .btn{
+          width:150rpx;
+          height:65rpx;
+          line-height:65rpx;
+          border:none;
+          font-size:28rpx;
+          color:#fff;
+          background:#fc9631;
+          border-radius:32.5rpx;
+      }
+  }
+ 
+  .personal-info{
+      width:92%;
+      height:auto;
+      margin:20rpx 4%;
+      position:relative;
+
+      .infoDetail{
+          padding:30rpx 20rpx;
+          background-color:#fff;
+          display:block;
+          box-shadow:0 8px 6px -6px #8a8a8a;
+          .infolist{
+              font-size:32rpx;
+              height:60rpx;
+              line-height:60rpx;
+              display:block;
+          }
+      }
+      .edit{
+            width:60rpx;
+            height:60rpx;
+            position:absolute;
+            top:30rpx;
+            right:20rpx;
+            .img{
+                width:60rpx;
+                height:60rpx;
+            }
+      }
+  }
+
+  .orange{
+      color:#fc9631;
+      font-weight:bold;
+  }
+</style>
+
+<template>
+    <view class="container">
+
+        <view class="address" wx:if="{{addrshow == true}}">
+
+            <view class="list border clearFix">
+                <text class="addressleft">联系人:</text></text>
+                <input type="text" placeholder="请添加联系人名称" value="{{personal}}"  bindblur="inputPersonal" class="addressright input"/>
+            </view>
+
+            <view class="list border clearFix">
+                <text class="addressleft">手机号:</text></text>
+                <input type="text" placeholder="请添加收货手机号码"  value="{{phone}}" bindblur="inputPhone" class="addressright input"/>
+            </view>
+
+            <view class="list border clearFix">
+                <text class="addressleft">收货地址:</text></text>
+                <input type="text" placeholder="请填写收货地址" value="{{address}}" bindblur="inputaddress" class="addressright input"/>
+            </view>
+
+            <!--<view class="list border clearFix">
+                <text class="addressleft">门牌号:</text></text>
+                <input type="text" placeholder="例:16楼427室" value="{{addrDetail}}" bindblur="inputaddrDetail" class="addressright input"/>
+            </view>-->
+
+        </view>
+
+        <view class="save" wx:if="{{addrshow == true}}">
+            <button class="btn" bindtap="save">保存</button>
+        </view>
+    </view>
+    
+    <view class="personal-info" wx:if="{{inforshow == true}}">
+        <view class="infoDetail">
+            <view class="infolist">联系人: <text class="orange">{{personal}}</text></view>
+            <view class="infolist">手机号: <text class="orange">{{phone}}</text></view>
+            <view class="infolist">收货地址: <text class="orange">{{address}}</text></view>
+            <!--<view class="infolist">门牌号: <text class="orange">{{addrDetail}}</text></view>-->
+        </view>
+        <view class="edit">
+            <image src="https://images.yitushijie.com/14391007482671288545" class="img" bindtap="editaddress"></image>
+        </view>
+    </view>
+
+    </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+
+  export default class Personal extends wepy.page {
+    
+    config = {
+        navigationBarTitleText: '收货信息'
+    }
+    components = {
+      
+    }
+
+    mixins = [testMixin]
+
+    data = {
+        personal:'',
+        phone:'',
+        address:'',
+        addrDetail: '',
+        inforshow:false,
+        addrshow:true,
+    }
+
+    computed = {
+        now () {
+          return +new Date()
+        }
+    }
+
+    methods = {
+        inputPersonal (e) {
+            this.personal = e.detail.value
+        },
+        inputPhone (e) {
+            this.phone = e.detail.value
+        },
+        inputaddress (e) {
+            this.address = e.detail.value
+        }, 
+        inputaddrDetail (e) {
+            this.addrDetail = e.detail.value
+        },
+        save () {
+            if (this.personal == '' || this.phone == '' || this.address == ''){
+                wepy.showToast({
+                    title:'信息没填完整哦',
+                    icon:'none'
+                })
+            } else {
+                this.addrshow = false
+                this.inforshow = true;
+                var data = {
+                    "personal":this.personal,
+                    "phone":this.phone,
+                    "address":this.address,
+                    "addrDetail": this.addrDetail,    
+                }
+                wepy.setStorage({
+                    key: 'address',
+                    data: JSON.stringify(data)
+                })
+            }
+        },
+        editaddress(){
+            this.addrshow = true;
+            this.inforshow = false;
+        },
+        toast () {
+            let promise = this.$invoke('toast', 'show', {
+                title: '自定义标题',
+                img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+            })
+
+            promise.then((d) => {
+                console.log('toast done')
+            })
+        },
+        counterEmit (...args) {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    events = {
+        'index-emit': (...args) => {
+            let $event = args[args.length - 1]
+            console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        }
+    }
+
+    onLoad() {
+        let self = this
+        wepy.getStorage({
+            key: 'address',
+            success(res) {
+                var data = res.data
+                var allinfo = JSON.parse(data)
+                if (allinfo != ''){
+                    self.addrshow = false;
+                    self.inforshow = true;
+                }
+                self.personal = allinfo.personal
+                self.phone = allinfo.phone
+                self.address = allinfo.address
+                self.addrDetail = allinfo.addrDetail
+            }
+        }) 
+      
+    }
+  }
+</script>

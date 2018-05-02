@@ -1,0 +1,15 @@
+{
+	"description": "for shopping",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wxc706dca25a7b85b6",
+	"projectname": "gigishop",
+	"miniprogramRoot": "./dist",
+	"condition": {}
+}
